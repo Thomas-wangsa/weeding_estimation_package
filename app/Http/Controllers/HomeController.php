@@ -8,6 +8,7 @@ use App\Http\Models\Source;
 use App\Http\Models\Relation;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\File;
+use Illuminate\Support\Facades\Input;
 use DB;
 use Excel;
 
@@ -86,16 +87,6 @@ class HomeController extends Controller
 
 
     protected function create(Request $request) {
-        $csv = $request->input('csv');
-        Storage::put($csv, 'export');
-        dd($request->input());
         
-        return storage_path('exports') . '/files.csv';
-        
-        Excel::load('files.csv', function($reader) {
-            dd($reader);
-    // reader methods
-
-        });
     }
 }
