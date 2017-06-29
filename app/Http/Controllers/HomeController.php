@@ -46,11 +46,13 @@ class HomeController extends Controller
             );
 
         $query = DB::table('quest')
-                ->select("quest_name","source_name","relation_name","adult","child","infant","invitation","is_come","prediction")
+                ->select("quest.quest_id","quest_name","source_name","relation_name","adult","child","infant","invitation","is_come","prediction")
                 ->join('source','source.source_id','=','quest.source_id')
                 ->join('relation','relation.relation_id','=','quest.relation_id')
                 ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
                 ->join('quest_estimation','quest_estimation.quest_id','=','quest.quest_id');
+
+                $query->where('status',1);
 
                 if($request->input('page')) {
                     $filter['page'] = $request->input('page');
@@ -126,8 +128,94 @@ class HomeController extends Controller
 
         if ($success) {
             $request->session()->flash('alert-success', 'User was successful added!');
-            return redirect()->route("add");
+            return redirect()->route("list");
         }
 
+    }
+
+    protected function edit($id) {
+        $data   = array(
+            'quest'     => null,
+            'source'    => Source::get(),
+            'relation'  => Relation::get()
+            );
+
+        $data['quest'] = Quest::where('quest.quest_id',$id)
+                ->select("quest.quest_id","quest_name","quest.source_id","quest.relation_id","adult","child","infant","invitation","is_come","prediction")
+                ->join('source','source.source_id','=','quest.source_id')
+                ->join('relation','relation.relation_id','=','quest.relation_id')
+                ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
+                ->join('quest_estimation','quest_estimation.quest_id','=','quest.quest_id')
+                ->first();
+        return view('edit',compact('data','id'));
+    }
+
+    protected function update(Request $request) {
+        //dd($request->input());
+        $quest_id = $request->input('id');
+        $quest_name = ucwords(strtolower(trim($request->input('quest'))));
+        DB::beginTransaction();
+        try {
+            $quest = Quest::find($quest_id);
+            $quest->quest_name  = $quest_name;
+            $quest->invitation  = $request->input('invitation') == "on"  ? 1 : 0;
+            $quest->source_id   = $request->input('source');
+            $quest->relation_id = $request->input('relation');
+            $quest->is_come     = $request->input('is_come');
+            $quest->save();
+
+            $quest_detail = QuestDetail::find($quest_id);
+            $quest_detail->quest_id = $quest_id;
+            $quest_detail->adult    = $request->input('adult');
+            $quest_detail->child    = $request->input('child');
+            $quest_detail->infant   = $request->input('infant');
+            $quest_detail->save();
+
+            $quest_estimation = QuestEstimation::find($quest_id);
+            $quest_estimation->quest_id     = $quest_id;
+            $quest_estimation->prediction   = $request->input('prediction');
+            $quest_estimation->ammount      = NULL;
+            $quest_estimation->save();
+
+
+            DB::commit();
+            $success = true;
+        } catch (\Exception $e) {
+            $success = false;
+            DB::rollback();
+            dd($e);
+        }
+
+        if ($success) {
+            $request->session()->flash('alert-success', 'User was successful added!');
+            return redirect()->action('HomeController@list')->withErrors([
+                                        'status' => 'Sukses',
+                                        'msg' => 'Access Denied'
+                                    ]);
+        }
+
+    }
+
+    protected function delete($id){
+         DB::beginTransaction();
+        try {
+            $quest = Quest::find($id);
+            $quest->status  = 0;
+            $quest->save();
+
+            DB::commit();
+            $success = true;
+        } catch (\Exception $e) {
+            $success = false;
+            DB::rollback();
+            dd($e);
+        }
+
+        if ($success) {
+            return redirect()->action('HomeController@list')->withErrors([
+                                        'status' => 'Sukses',
+                                        'msg' => 'Access Denied'
+                                    ]);
+        }
     }
 }

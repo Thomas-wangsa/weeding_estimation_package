@@ -2,6 +2,7 @@
 
 <style type="text/css">
 	table tr th {text-align: center}
+	table tr td {vertical-align: middle!important}
 </style>
 @section('content')
 	<div class="container-fluid">
@@ -60,6 +61,7 @@
 		      	<tr class="text-center">
 		        <th> No </th>
 		        <th> Name </th>
+		        <th style="width: 1px"> </th>
 		        <th> Person </th>
 		        <th> Invitation </th>
 		        <th> From </th>
@@ -76,7 +78,7 @@
 		    	@else
 		    		@foreach($data['quest'] as $key=>$val)
 		    		<tr class="text-center">
-		    			<td>
+		    			<td class="vertical"> 
 		    				@if($filter['page'])
 		    					{{ ($filter['page']-1) * 20 + $key + 1 }}
 		    				@else
@@ -84,6 +86,16 @@
 		    				@endif
 		    			</td>
 		    			<td> {{ $val->quest_name }}</td>
+		    			<td class="
+		    			<?php
+			    		switch($val->is_come) :
+			    		case 1 	: echo "btn-primary";break;
+			    		case 2 	: echo "btn-warning";break;
+			    		case 3 	: echo "btn-danger";break;
+			    		default : echo "btn-default";break;
+			    		endswitch; 
+			    		?>
+			    		"> </td>
 		    			<td> 
 		    				<?php 
 		    				$child 		= $val->child * 80/100;
@@ -104,17 +116,16 @@
 		    			<td>
 		    				{{ number_format($val->prediction) }}
 		    			</td>
-		    			<td class="
-		    			<?php
-			    		switch($val->is_come) :
-			    		case 1 	: echo "btn-primary";break;
-			    		case 2 	: echo "btn-warning";break;
-			    		case 3 	: echo "btn-danger";break;
-			    		default : echo "btn-default";break;
-			    		endswitch; 
-			    		?>
-		    			">
-		    				Action
+		    			<td class="">
+		    				<a href="{{route('edit',['id'=>$val->quest_id])}}">
+							  	<i class="glyphicon glyphicon-edit">
+							  	</i>
+							</a>
+							/
+							<a href="{{route('delete',['id'=>$val->quest_id])}}">
+							  	<i class="glyphicon glyphicon-remove">
+							  	</i>
+							</a>
 		    			</td>
 		    		</tr>
 		    		@endforeach
