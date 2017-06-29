@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use DB;
+// Models
 use App\Http\Models\Quest;
 use App\Http\Models\Source;
 use App\Http\Models\Relation;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Http\File;
-use Illuminate\Support\Facades\Input;
-use DB;
-use Excel;
+use App\Http\Models\QuestDetail;
+use App\Http\Models\QuestEstimation;
 
 class HomeController extends Controller
 {
@@ -87,6 +86,48 @@ class HomeController extends Controller
 
 
     protected function create(Request $request) {
-        
+        //dd($request->input());
+
+        $quest_name = ucwords(strtolower(trim($request->input('quest'))));
+        DB::beginTransaction();
+        try {
+            $quest = new Quest;
+            $quest->quest_name  = $quest_name;
+            $quest->invitation  = $request->input('invitation') == "on"  ? 1 : 0;
+            $quest->source_id   = $request->input('source');
+            $quest->relation_id = $request->input('relation');
+            $quest->is_come     = $request->input('is_come');
+            $quest->save();
+
+            $quest_id = Quest::where('quest_name',$quest_name)
+                        ->pluck('quest_id')->first();
+
+            $quest_detail = new QuestDetail;
+            $quest_detail->quest_id = $quest_id;
+            $quest_detail->adult    = $request->input('adult');
+            $quest_detail->child    = $request->input('child');
+            $quest_detail->infant   = $request->input('infant');
+            $quest_detail->save();
+
+            $quest_estimation = new QuestEstimation;
+            $quest_estimation->quest_id     = $quest_id;
+            $quest_estimation->prediction   = $request->input('prediction');
+            $quest_estimation->ammount      = NULL;
+            $quest_estimation->save();
+
+
+            DB::commit();
+            $success = true;
+        } catch (\Exception $e) {
+            $success = false;
+            DB::rollback();
+            dd($e);
+        }
+
+        if ($success) {
+            $request->session()->flash('alert-success', 'User was successful added!');
+            return redirect()->route("add");
+        }
+
     }
 }

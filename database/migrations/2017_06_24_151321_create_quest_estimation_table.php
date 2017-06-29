@@ -15,8 +15,8 @@ class CreateQuestEstimationTable extends Migration
     {
         Schema::create('quest_estimation', function (Blueprint $table) {
             $table->integer('quest_id');
-            $table->integer('prediction');
-            $table->integer('ammount');
+            $table->integer('prediction')->nullable();
+            $table->integer('ammount')->nullable();
 
             $table->foreign('quest_id', 'quest_estimation_quest_id_fkey')
             ->references('quest_id')->on('quest_detail')

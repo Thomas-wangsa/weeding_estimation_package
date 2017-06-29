@@ -12,6 +12,6 @@ class QuestTableSeeder extends Seeder
     public function run()
     {	
         factory(App\User::class)->create();
-        factory(App\Http\Models\QuestEstimation::class,340)->create();
+        //factory(App\Http\Models\QuestEstimation::class,340)->create();
     }
 }

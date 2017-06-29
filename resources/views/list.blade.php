@@ -14,8 +14,11 @@
 		</div>
 
   		 <form class="form-inline">
-		  	<div class="form-group">
-			    <label for="source">From:</label>
+  		 	<div class="input-group">
+			    <span class="input-group-addon">
+			    	<i class="glyphicon glyphicon-tag">
+		  			</i>
+			    </span>
 			    <select name="source" class="form-control">
 			    	<option value=""> Select </option>
 			  		@foreach($data['source'] as $key=>$source)
@@ -26,9 +29,12 @@
 			  		</option>
 			  		@endforeach
 			    </select>
-		  	</div>
-		  	<div class="form-group">
-			    <label for="source">Relation:</label>
+	  		</div>
+	  		<div class="input-group">
+	  			<span class="input-group-addon">
+	  				<i class="glyphicon glyphicon-book">
+		  			</i>
+	  			</span>
 			    <select name="relation" class="form-control">
 			    	<option value=""> Select </option>
 			    	@foreach($data['relation'] as $key=>$relation)
@@ -39,7 +45,7 @@
 			  		</option>
 			  	@endforeach
 			    </select>
-		  	</div>
+	  		</div>
 		  	<br/>
 		  <button type="submit" class="btn btn-primary" style="margin-top: 5px">
 		  	Submit
