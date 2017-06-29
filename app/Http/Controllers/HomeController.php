@@ -21,6 +21,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('web');
     }
 
     /**
@@ -33,6 +34,7 @@ class HomeController extends Controller
     }
 
     public function list(Request $request) {
+
         $data   = array(
             'quest'     => null,
             'source'    => Source::get(),
@@ -127,8 +129,8 @@ class HomeController extends Controller
         }
 
         if ($success) {
-            $request->session()->flash('alert-success', 'User was successful added!');
-            return redirect()->route("list");
+            session()->flash('add',"Quest ID $quest_id has been added");
+            return redirect()->route('list');
         }
 
     }
@@ -187,11 +189,8 @@ class HomeController extends Controller
         }
 
         if ($success) {
-            $request->session()->flash('alert-success', 'User was successful added!');
-            return redirect()->action('HomeController@list')->withErrors([
-                                        'status' => 'Sukses',
-                                        'msg' => 'Access Denied'
-                                    ]);
+            session()->flash('update',"Quest ID $quest_id has been updated");
+            return redirect()->route('list');
         }
 
     }
@@ -212,10 +211,8 @@ class HomeController extends Controller
         }
 
         if ($success) {
-            return redirect()->action('HomeController@list')->withErrors([
-                                        'status' => 'Sukses',
-                                        'msg' => 'Access Denied'
-                                    ]);
+            session()->flash('delete',"Quest ID $id has been deleted");
+            return redirect()->route('list');
         }
     }
 }

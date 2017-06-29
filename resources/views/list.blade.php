@@ -5,6 +5,27 @@
 	table tr td {vertical-align: middle!important}
 </style>
 @section('content')
+	
+	<div class="container">
+		@if(Session::has('delete'))
+	        <div class="alert alert-danger" style="margin-top: 150px">
+	            <a class="close" data-dismiss="alert">×</a>
+	            <strong> {!!Session::get('delete')!!} </strong> 
+	        </div>
+	    @elseif(Session::has('update'))
+	    	<div class="alert alert-info" style="margin-top: 150px">
+	            <a class="close" data-dismiss="alert">×</a>
+	            <strong> {!!Session::get('update')!!} </strong> 
+	        </div>
+	    @elseif(Session::has('add'))
+	    	<div class="alert alert-success" style="margin-top: 150px">
+	            <a class="close" data-dismiss="alert">×</a>
+	            <strong> {!!Session::get('add')!!} </strong> 
+	        </div>    
+	    @endif
+    </div>
+    
+
 	<div class="container-fluid">
 		<h2 class="text-center"> Weeding Package List </h2> 
 
