@@ -68,6 +68,44 @@
 			  	@endforeach
 			    </select>
 	  		</div>
+	  		<div class="input-group">
+		  		<span class="input-group-addon">
+		  			<i class="glyphicon glyphicon-star">
+		  			</i>
+		  		</span>
+			    <select name="is_come" class="form-control">
+			    	<option value="1"
+			    	{{$filter['is_come'] == '1' ? 'selected' : ''}}
+			    	> 
+			    		High 
+			    	</option>
+			    	<option value="2"
+			    	{{$filter['is_come'] == '2' ? 'selected' : ''}}
+			    	> 
+			    		Medium 
+			    	</option>
+			    	<option value="3"
+			    	{{$filter['is_come'] == '3' ? 'selected' : ''}}
+			    	> 
+			    		Low 
+			    	</option>
+			    </select>
+			</div>
+	  		<div class="checkbox">
+				<label>
+				<input type="checkbox" name="invitation" value="1" 
+				{{$filter['invitation'] == '1' ? 'checked' : ''}}
+				> 
+				Invitation
+				</label>
+  			</div>
+  			<div class="checkbox">
+				<label>
+				<input type="checkbox" name="deleted" value="1"
+				{{$filter['deleted'] == '1' ? 'checked' : ''}}
+				> Deleted
+				</label>
+  			</div>
 		  	<br/>
 		  <button type="submit" class="btn btn-primary" style="margin-top: 5px">
 		  	Submit
@@ -92,7 +130,7 @@
 		      	</tr>
 		    </thead>
 		    <tbody>
-		    	@if($data['quest'] === null)
+		    	@if($data['quest']->total() == 0)
 		    	<tr>
 		    		<td class="text-center" colspan="10">  No Quest Data </td>
 		    	</tr> 
@@ -142,11 +180,19 @@
 							  	<i class="glyphicon glyphicon-edit">
 							  	</i>
 							</a>
-							/
-							<a href="{{route('delete',['id'=>$val->quest_id])}}">
+							&nbsp;/&nbsp;
+							@if($filter['deleted'] == 1)
+							<a href="{{route('delete',['id'=>$val->quest_id,'status'=>0])}}">
+							  	<i class="glyphicon glyphicon-repeat">
+							  	</i>
+							</a>
+
+							@else
+							<a href="{{route('delete',['id'=>$val->quest_id,'status'=>1])}}">
 							  	<i class="glyphicon glyphicon-remove">
 							  	</i>
 							</a>
+							@endif
 		    			</td>
 		    		</tr>
 		    		@endforeach

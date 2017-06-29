@@ -56,12 +56,12 @@
 				    <select name="prediction" class="form-control">
 				    	<option value=""> Undefined Value </option>
 				    	@for($i=1;$i<=20;$i++)
-				    	<option value="{{$i*50000}}"
-				    	@if($i*50000 == $data['quest']->prediction)
+				    	<option value="{{$i*100000}}"
+				    	@if($i*100000 == $data['quest']->prediction)
 				    	selected
 				    	@endif
 				    	> 
-				    		{{number_format($i*50000)}}
+				    		{{number_format($i*100000)}}
 				    	</option>
 				    	@endfor
 				    </select>

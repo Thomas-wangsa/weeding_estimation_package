@@ -31,12 +31,20 @@ class CreateSourceTable extends Migration
                     'information' => 'Pengantin Wanita'
                 ),
                 array(
-                    'source_name' => $faker->name('male')." & ".$faker->name('female'),
-                    'information' => 'Orang Tua Pria'
+                    'source_name' => $faker->name('male'),
+                    'information' => 'Ayah dari Mempelai Pria'
                 ),
                 array(
-                    'source_name' => $faker->name('male')." & ".$faker->name('female'),
-                    'information' => 'Orang Tua Wanita'
+                    'source_name' => $faker->name('female'),
+                    'information' => 'Ibu dari Mempelai Pria'
+                ),
+                array(
+                    'source_name' => $faker->name('male'),
+                    'information' => 'Ayah dari Mempelai Wanita'
+                ),
+                array(
+                    'source_name' => $faker->name('female'),
+                    'information' => 'Ibu dari Mempelai Wanita'
                 ),
 
         );

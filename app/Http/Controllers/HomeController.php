@@ -44,6 +44,9 @@ class HomeController extends Controller
         $filter = array(
             'source'        => null,
             'relation'      => null,
+            'is_come'       => null,
+            'invitation'    => null,
+            'deleted'       => null,
             'page'          => null
             );
 
@@ -54,11 +57,9 @@ class HomeController extends Controller
                 ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
                 ->join('quest_estimation','quest_estimation.quest_id','=','quest.quest_id');
 
-                $query->where('status',1);
+                //$query->where('status',1);
 
-                if($request->input('page')) {
-                    $filter['page'] = $request->input('page');
-                }
+                
                 if($request->input('source')) {
                 $query->where('quest.source_id',$request->input('source'));
                 $filter['source'] = $request->input('source');
@@ -67,6 +68,29 @@ class HomeController extends Controller
                 if($request->input('relation')) {
                 $query->where('quest.relation_id',$request->input('relation'));
                 $filter['relation'] = $request->input('relation');
+                }
+
+                if($request->input('is_come')) {
+                $query->where('quest.is_come',$request->input('is_come'));
+                $filter['is_come'] = $request->input('is_come');   
+                }
+
+                if($request->input('invitation')) {
+                $query->where('quest.invitation',$request->input('invitation'));
+                $filter['invitation'] = $request->input('invitation');   
+                } else {
+                $query->where('quest.invitation',0);   
+                }
+
+                if($request->input('deleted')) {
+                $query->where('quest.status',0);
+                $filter['deleted'] = 1;   
+                } else {
+                $query->where('quest.status',1);   
+                }
+
+                if($request->input('page')) {
+                    $filter['page'] = $request->input('page');
                 }
 
         //dd($filter);
@@ -195,11 +219,16 @@ class HomeController extends Controller
 
     }
 
-    protected function delete($id){
-         DB::beginTransaction();
+    protected function delete($id,$status){
+        if($status == 1) {
+            $status_update = 0;
+        } else {
+            $status_update = 1;
+        }
+        DB::beginTransaction();
         try {
             $quest = Quest::find($id);
-            $quest->status  = 0;
+            $quest->status  = $status_update;
             $quest->save();
 
             DB::commit();

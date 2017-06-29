@@ -17,8 +17,10 @@ class PopulateData extends Migration
             0 => "undefined",
             1 => "Thomas",
             2 => "Novita",
-            3 => "GOUW SIAN TEK & ERNA WANGSA",
-            4 => "LIE KIAN JIN & APUNG",
+            3 => "GOUW SIAN TEK",
+            4 => "ERNA WANGSA",
+            5 => "LIE KIAN JIN",
+            6 => "AFUNG",
             );
         foreach($array as $key=>$val) :
             if($key === 0) {
