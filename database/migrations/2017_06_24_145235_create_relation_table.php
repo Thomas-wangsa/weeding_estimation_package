@@ -19,7 +19,6 @@ class CreateRelationTable extends Migration
         });
 
         // Insert some stuff
-        $faker = Faker\Factory::create();
         $array = array(
                 array(
                     'relation_name' => 'sibling',
@@ -29,6 +28,9 @@ class CreateRelationTable extends Migration
                 ),
                 array(
                     'relation_name' => 'co-workers',
+                ),
+                array(
+                    'relation_name' => 'friends',
                 ),
                 array(
                     'relation_name' => 'others',

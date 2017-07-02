@@ -20,6 +20,8 @@ Route::get('/list', 'HomeController@list')->name('list');
 Route::get('/add', 'HomeController@add')->name('add');
 Route::get('/edit/{id}', 'HomeController@edit')->name('edit');
 Route::get('/delete/{id}/{status}', 'HomeController@delete')->name('delete');
+Route::get('/upload/{file}', 'HomeController@upload')->name('upload');
+Route::get('/cost', 'HomeController@cost')->name('cost');
 Route::post('/update', 'HomeController@update')->name('update');
 Route::post('/create', 'HomeController@create')->name('create');
 

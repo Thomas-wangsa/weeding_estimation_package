@@ -74,6 +74,7 @@
 		  			</i>
 		  		</span>
 			    <select name="is_come" class="form-control">
+			    	<option value=""> Select </option>
 			    	<option value="1"
 			    	{{$filter['is_come'] == '1' ? 'selected' : ''}}
 			    	> 
@@ -106,12 +107,19 @@
 				> Deleted
 				</label>
   			</div>
-		  	<br/>
 		  <button type="submit" class="btn btn-primary" style="margin-top: 5px">
 		  	Submit
 		  </button>
 		</form> 
 
+		<div style="margin-top: -20px">
+			<div class="pull-left" style="margin-top: 22px"> 
+				Total data : {{$data['count']}} quest
+			</div>
+			<div class="pull-right" style="margin-bottom: -18px"> 
+	  		{{ $data['quest']->appends($filter)->links() }}
+	  		</div>
+  		</div>
 		<div class="clearfix"> </div>
 
   		<div class="table-responsive">          
@@ -201,7 +209,7 @@
 		    </tbody>
 		  	</table>
   		</div>
-  		<div class="pull-right"> 
+  		<div class="pull-right" style="margin-top: -28px"> 
   		{{ $data['quest']->appends($filter)->links() }}
   		</div>
 	</div>

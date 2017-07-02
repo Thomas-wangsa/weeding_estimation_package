@@ -65,14 +65,34 @@ $factory->define(App\Http\Models\QuestDetail::class, function (Faker\Generator $
     'quest_id'      => factory(App\Http\Models\Quest::class)->create()->quest_id,
     'adult'			=> $faker->numberBetween($min = 1, $max = 2),
     'child'			=> $faker->numberBetween($min = 0, $max = 2),
-    'infant'		    => $faker->numberBetween($min = 0, $max = 1),
+    'infant'		=> $faker->numberBetween($min = 0, $max = 1),
     ];
 });
 
 $factory->define(App\Http\Models\QuestEstimation::class, function (Faker\Generator $faker) {
     return [
-    'quest_id'          =>factory(App\Http\Models\QuestDetail::class)->create()->quest_id,
+    'quest_id'          => factory(App\Http\Models\QuestDetail::class)->create()->quest_id,
     'prediction'		=> $faker->numberBetween($min = 50000, $max = 200000),
     'ammount'			=> $faker->numberBetween($min = 50000, $max = 300000),
+    ];
+});
+
+$factory->define(App\Http\Models\EstimationBudget::class, function (Faker\Generator $faker) {
+    return [
+    'budget_name'       => $faker->name
+    ];
+});
+
+$factory->define(App\Http\Models\EstimationBudgetDetail::class, function (Faker\Generator $faker) {
+    $estimation = DB::table('estimation_budget')->select('estimation_id')->get();
+    $estimation_list = array();
+    foreach($estimation as $key=>$val_source) :
+        $estimation_list[] = $val_source->estimation_id;
+    endforeach;
+    return [
+    'estimation_id'         => $faker->randomElement($array = $estimation_list),
+    'prediction'            => $faker->numberBetween($min = 50000, $max = 200000),
+    'paid'                  => $faker->numberBetween($min = 50000, $max = 300000),
+    'detail'                => "Buy"." ".$faker->catchPhrase,
     ];
 });

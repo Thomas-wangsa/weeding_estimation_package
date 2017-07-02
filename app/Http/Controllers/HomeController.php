@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
+use Excel;
 // Models
 use App\Http\Models\Quest;
 use App\Http\Models\Source;
@@ -38,7 +39,8 @@ class HomeController extends Controller
         $data   = array(
             'quest'     => null,
             'source'    => Source::get(),
-            'relation'  => Relation::get()
+            'relation'  => Relation::get(),
+            'count'     => null
             );
 
         $filter = array(
@@ -51,7 +53,6 @@ class HomeController extends Controller
             );
 
         $query = DB::table('quest')
-                ->select("quest.quest_id","quest_name","source_name","relation_name","adult","child","infant","invitation","is_come","prediction")
                 ->join('source','source.source_id','=','quest.source_id')
                 ->join('relation','relation.relation_id','=','quest.relation_id')
                 ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
@@ -94,7 +95,12 @@ class HomeController extends Controller
                 }
 
         //dd($filter);
-        $quest = $query->paginate(20);
+        $count = $query->count();
+            if($count > 0) {
+                $data['count'] = $count;
+            }
+        $quest = $query->select("quest.quest_id","quest_name","source_name","relation_name","adult","child","infant","invitation","is_come","prediction")
+            ->orderBy('quest_name')->paginate(20);
             if($quest !== null) {
             $data['quest'] = $quest;
             }                     
@@ -243,5 +249,51 @@ class HomeController extends Controller
             session()->flash('delete',"Quest ID $id has been deleted");
             return redirect()->route('list');
         }
+    }
+
+    protected function upload($files) {
+        Excel::load($files, function($reader) {
+            DB::beginTransaction();
+            try {
+                foreach($reader->get() as $key=>$val) {
+                $quest = new Quest;
+                $quest->quest_name  = $val->name;
+                $quest->invitation  = $val->invitation == null ? '0' : $val->invitation;
+                $quest->source_id   = $val->source;
+                $quest->relation_id = $val->relation;
+                $quest->is_come     = $val->is_come;
+                $quest->save();
+
+                $quest_id = Quest::where('quest_name',$val->name)
+                        ->pluck('quest_id')->first();
+
+                $quest_detail = new QuestDetail;
+                $quest_detail->quest_id = $quest_id;
+                $quest_detail->adult    = $val->adult == null ? '2' : $val->adult;
+                $quest_detail->child    = $val->child == null ? '0' : $val->child;
+                $quest_detail->infant   = $val->infant == null ? '0' : $val->infant ;
+                $quest_detail->save();
+
+                $quest_estimation = new QuestEstimation;
+                $quest_estimation->quest_id     = $quest_id;
+                $quest_estimation->prediction   = $val->prediction;
+                $quest_estimation->ammount      = NULL;
+                $quest_estimation->save();
+                }
+            DB::commit();
+            $success = true;
+            return redirect()->route('list');
+            } catch (\Exception $e) {
+                $success = false;
+                DB::rollback();
+                dd($e);
+            }
+            
+        });
+    }
+
+
+    protected function cost() {
+        return view('cost');
     }
 }
