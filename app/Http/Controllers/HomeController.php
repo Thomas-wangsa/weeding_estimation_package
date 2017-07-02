@@ -11,6 +11,8 @@ use App\Http\Models\Source;
 use App\Http\Models\Relation;
 use App\Http\Models\QuestDetail;
 use App\Http\Models\QuestEstimation;
+use App\Http\Models\EstimationBudget;
+use App\Http\Models\EstimationBudgetDetail;
 
 class HomeController extends Controller
 {
@@ -294,6 +296,24 @@ class HomeController extends Controller
 
 
     protected function cost() {
-        return view('cost');
+        $data = array(
+            'total_cost' => null,
+            'detail'     => null
+            );
+
+        $total_cost = EstimationBudgetDetail::sum('prediction');
+            if($total_cost > 0 & $total_cost!=null) {
+                $data['total_cost'] = $total_cost;
+            }
+        $estimation_budget = EstimationBudget::get();
+            if($estimation_budget != null) {
+                $data['detail'] = $estimation_budget;
+            }
+
+        return view('cost',compact('data'));
     }
+
+    protected function detail(Request $request) {
+        return "CROT";
+    } 
 }

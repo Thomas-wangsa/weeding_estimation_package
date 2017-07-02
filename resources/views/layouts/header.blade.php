@@ -124,7 +124,6 @@
       font-size: 14px;
   }
   .panel-footer .btn {
-      margin: 15px 0;
       background-color: #f4511e;
       color: #fff;
   }
