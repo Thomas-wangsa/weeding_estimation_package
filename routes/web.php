@@ -22,6 +22,7 @@ Route::get('/edit/{id}', 'HomeController@edit')->name('edit');
 Route::get('/delete/{id}/{status}', 'HomeController@delete')->name('delete');
 Route::get('/upload/{file}', 'HomeController@upload')->name('upload');
 Route::get('/cost', 'HomeController@cost')->name('cost');
+Route::get('/prediction', 'HomeController@prediction')->name('prediction');
 Route::post('/update', 'HomeController@update')->name('update');
 Route::post('/create', 'HomeController@create')->name('create');
 Route::post('/detail', 'HomeController@detail')->name('detail');

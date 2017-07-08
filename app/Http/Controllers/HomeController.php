@@ -335,5 +335,38 @@ class HomeController extends Controller
             );
 
         return $response;
-    } 
+    }
+
+
+    protected function prediction() {
+        $data = array(
+            'total_quest'       => Quest::count(),
+            'total_invitation'  => Quest::where('invitation',1)->count()
+            ); 
+        $n = 0;
+        for($i=1;$i<=3;$i++) {
+            switch($n) :
+                case 0 : $is_come = "High";break;
+                case 1 : $is_come = "Medium";break;
+                case 2 : $is_come = "Low";break;
+                default: $is_come = "Undefined";break;  
+            endswitch;
+            $data['is_come'][$n]['is_come'] = $is_come;
+            $data['is_come'][$n]['quest'] = Quest::where('is_come',$i)->count();
+            $data['is_come'][$n]['adult'] = Quest::where('quest.is_come',$i)
+                    ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
+                    ->sum('adult');
+            $data['is_come'][$n]['child'] = Quest::where('quest.is_come',$i)
+                    ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
+                    ->sum('child');
+            $data['is_come'][$n]['infant'] = Quest::where('quest.is_come',$i)
+                    ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
+                    ->sum('infant');
+            $data['is_come'][$n]['total'] = $data['is_come'][$n]['adult'] + ($data['is_come'][$n]['child'] * 80/100) + ($data['is_come'][$n]['infant'] * 25/100);
+            $n++;
+        }
+
+        //dd($data);
+        return view('prediction',compact('data'));
+    }
 }
