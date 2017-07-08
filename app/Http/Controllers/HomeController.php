@@ -297,23 +297,43 @@ class HomeController extends Controller
 
     protected function cost() {
         $data = array(
-            'total_cost' => null,
             'detail'     => null
             );
 
         $total_cost = EstimationBudgetDetail::sum('prediction');
             if($total_cost > 0 & $total_cost!=null) {
-                $data['total_cost'] = $total_cost;
+                $data['cost']['prediction'] = $total_cost;
+            }
+        $total_paid = EstimationBudgetDetail::sum('paid');
+            if($total_paid > 0 & $total_paid!=null) {
+                $data['cost']['paid'] = $total_paid;
             }
         $estimation_budget = EstimationBudget::get();
-            if($estimation_budget != null) {
-                $data['detail'] = $estimation_budget;
-            }
+        foreach($estimation_budget as $key=>$val) :
+            $data['detail'][$key]['estimation_id'] = $val->estimation_id;
+            $data['detail'][$key]['budget_name'] = $val->budget_name;
+            $data['detail'][$key]['budget_prediction'] = EstimationBudgetDetail::where('estimation_id',$val->estimation_id)->sum('prediction');
+        endforeach;
 
+            // if($estimation_budget != null) {
+            //     $data['detail'] = $estimation_budget;
+            // }
+        //dd($data['detail']);
         return view('cost',compact('data'));
     }
 
     protected function detail(Request $request) {
-        return "CROT";
+        $id = $request->id;
+        $detail    =  EstimationBudgetDetail::where('estimation_id',$id)->get();
+            foreach($detail as $key=>$val) :
+                $detail[$key]['prediction'] = number_format($val->prediction);
+                $detail[$key]['paid'] = number_format($val->paid);
+            endforeach;
+        $response = array(
+            'budget_name'   => EstimationBudget::where('estimation_id',$id)->pluck('budget_name')->first(),
+            'detail'        => $detail
+            );
+
+        return $response;
     } 
 }

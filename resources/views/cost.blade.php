@@ -7,7 +7,8 @@
 </style>
 <!-- Container (Services Section) -->
 <div id="services" class="container-fluid text-center">
-  <h2> Total Cost Rp. {{ number_format($data['total_cost'])}} </h2>
+  <h2> Total Cost Rp. {{ number_format($data['cost']['prediction'])}} - Rp. {{ number_format($data['cost']['paid'])}} = 
+  Rp. {{number_format($data['cost']['prediction']-$data['cost']['paid'])}}</h2>
   <h4> Detail Cost </h4>
   <br>
 
@@ -15,40 +16,40 @@
   	<div class="col-sm-4">
   		@if($key == 0)
   			<span class="glyphicon glyphicon-home logo-small" 
-  			onclick="detail({{$val->estimation_id}})"></span>
+  			onclick="detail({{$val['estimation_id']}})"></span>
 	      	<h4>PACKAGE</h4>
-	      	<p> Wedding Package</p>
+	      	<p> Rp. {{number_format($val['budget_prediction'])}}</p>
   		@endif
   		@if($key == 1)
   			<span class="glyphicon glyphicon-heart logo-small"
-  			onclick="detail({{$val->estimation_id}})"></span>
+  			onclick="detail({{$val['estimation_id']}})"></span>
 	      	<h4>Bridal</h4>
-	      	<p>Bridall Add On </p>
+	      	<p> Rp. {{number_format($val['budget_prediction'])}}</p>
   		@endif
   		@if($key == 2)
   			<span class="glyphicon glyphicon-plus logo-small"
-  			onclick="detail({{$val->estimation_id}})"></span>
+  			onclick="detail({{$val['estimation_id']}})"></span>
       		<h4> Food </h4>
-      		<p> Food Add On </p>
+      		<p> Rp. {{number_format($val['budget_prediction'])}}</p>
       		<br> <br>
   		@endif
   		@if($key == 3)
   			<span class="glyphicon glyphicon-shopping-cart logo-small"
-  			onclick="detail({{$val->estimation_id}})"></span>
+  			onclick="detail({{$val['estimation_id']}})"></span>
       		<h4>Exclude </h4>
-      		<p> Exclude Add On</p>
+      		<p> Rp. {{number_format($val['budget_prediction'])}}</p>
   		@endif
   		@if($key == 4)
       		<span class="glyphicon glyphicon-user logo-small"
-      		onclick="detail({{$val->estimation_id}})"></span>
+      		onclick="detail({{$val['estimation_id']}})"></span>
 		    <h4>Event </h4>
-		    <p>Event Budget </p>
+		    <p> Rp. {{number_format($val['budget_prediction'])}}</p>
   		@endif
   		@if($key == 5)
   			<span class="glyphicon glyphicon-thumbs-up logo-small"
-  			onclick="detail({{$val->estimation_id}})"></span>
+  			onclick="detail({{$val['estimation_id']}})"></span>
       		<h4 style="color:#303030;">Other</h4>
-      		<p>Cost & Etc </p>
+      		<p> Rp. {{number_format($val['budget_prediction'])}}</p>
   		@endif
       
     </div>
@@ -66,7 +67,7 @@
       	<div class="panel" style="margin-bottom: 0px">
 	      	<div class="panel-heading">
 	      		<button type="button" class="close" data-dismiss="modal">&times;</button>
-          		<h4 class="modal-title text-center" id="modal-title">
+          		<h4 class="modal-title text-center" id="modal_title">
           			-
           		</h4>
 	      	</div>
@@ -81,7 +82,7 @@
 				        <th> Detail </th>
 				      </tr>
 				    </thead>
-				    <tbody>
+				    <tbody id="tbody_ajax">
 				    </tbody>
 				  </table>
 				</div>
@@ -106,6 +107,7 @@ $(document).ready(function(){
 
 function detail(id) {
 	$("#detailModal").modal();
+  $('#tbody_ajax').empty();
 	$.ajax({
 		type: "POST",
         url: "{{route('detail')}}",
@@ -113,7 +115,23 @@ function detail(id) {
         	"_token": "{{ csrf_token() }}",
         	"id": id,
         	"type" : "get_detail"
-        }
+        },
+      success: function (data) {
+        $('#modal_title').html(data.budget_name);
+        var tr = '';
+        var number = 1;
+        $.each( data.detail, function( key, value ) {
+            tr += '<tr> ';
+            tr += '<td> '+ number +' </td>';
+            tr += '<td> Rp.'+ value.prediction +' </td>';
+            tr += '<td> Rp.'+ value.paid +' </td>';
+            tr += '<td> '+ value.detail +' </td>';
+            tr += '</tr>';
+            number ++;
+        });
+        
+        $('#tbody_ajax').append(tr);
+      },
 	});
 		 
 }

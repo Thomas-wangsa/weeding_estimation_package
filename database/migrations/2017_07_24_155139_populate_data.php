@@ -51,19 +51,19 @@ class PopulateData extends Migration
                 ),
                 array(
                     'estimation_id'     => 2,
-                    'prediction'        => 1700000,
-                    'paid'              => 0,
+                    'prediction'        => 1750000,
+                    'paid'              => 1750000,
                     'detail'            => 'Buy Suit For Daniel '
                 ),
                 array(
                     'estimation_id'     => 3,
-                    'prediction'        => 750000,
+                    'prediction'        => 7500000,
                     'paid'              => 0,
                     'detail'            => '100 Pack of Food '
                 ),
                 array(
                     'estimation_id'     => 3,
-                    'prediction'        => 375000,
+                    'prediction'        => 3750000,
                     'paid'              => 0,
                     'detail'            => '50 Pack of Food '
                 ),
@@ -156,6 +156,12 @@ class PopulateData extends Migration
                     'prediction'        => 117000,
                     'paid'              => 117000,
                     'detail'            => 'Survey Cost 3 Mcd + Baso'
+                ),
+                array(
+                    'estimation_id'     => 6,
+                    'prediction'        => 300000,
+                    'paid'              => 300000,
+                    'detail'            => 'Go CAR + Fee + Lunch for Prewedding Session'
                 ),
 
         );
