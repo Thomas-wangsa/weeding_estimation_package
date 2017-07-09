@@ -19,7 +19,7 @@
     <div class="col-sm-4 col-xs-12">
       <div class="panel panel-default text-center">
         <div class="panel-heading">
-          <h1> {{$val['is_come']}}</h1>
+          <h1 onclick="ajax({{$val['n']}})"> {{$val['is_come']}}</h1>
         </div>
         <div class="panel-body">
           <p><strong>{{$val['quest']}}</strong> Quest </p>
@@ -76,4 +76,90 @@
    
   </div> <!-- ROW -->
 </div> <!--ID Pricing-->
+
+<!-- Modal -->
+  <div class="modal fade" id="detailModal" role="dialog" style="margin-top: 75px">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="panel" style="margin-bottom: 0px">
+          <div class="panel-heading">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title text-center" id="">
+                <span id="modal_title"> </span>
+                Quest
+              </h4>
+          </div>
+          <div class="panel-body">
+            <div class="table-responsive ">          
+          <table class="table table-condensed table-hover table-bordered table-striped">
+            <thead>
+              <tr>
+                <th> No </th>
+                <th> Quest Name </th>
+                <th> Inv </th>
+                <th> Source </th>
+                <th> Relation </th>
+                <th> A </th>
+                <th> C </th>
+                <th> I </th>
+                <th> Prediction </th>
+              </tr>
+            </thead>
+            <tbody id="tbody_ajax">
+            </tbody>
+          </table>
+        </div>
+          </div>
+          <div class="panel-footer">
+            <button type="button" class="btn btn-warning pull-right" 
+            data-dismiss="modal">
+              Close
+            </button>
+            <div class="clearfix"/>
+          </div>
+      </div>
+      </div>
+      
+    </div>
+  </div>
+<script type="text/javascript">
+  
+  function ajax(id) {
+    $("#detailModal").modal();
+    $('#tbody_ajax').empty();
+    $.ajax({
+    type: "POST",
+        url: "{{route('ajax')}}",
+        data: {
+          "_token": "{{ csrf_token() }}",
+          "id": id,
+          "type" : "get_ajax"
+        },
+      success: function (data) {
+        $('#modal_title').html(data.quest_total);
+        var tr = '';
+        var number = 1;
+        $.each( data.quest, function( key, value ) {
+            tr += '<tr> ';
+            tr += '<td> '+ number +' </td>';
+            tr += '<td> '+ value.quest_name +' </td>';
+            tr += '<td> '+ value.invitation +' </td>';
+            tr += '<td> '+ value.source_name +' </td>';
+            tr += '<td> '+ value.relation_name +' </td>';
+            tr += '<td> '+ value.adult +' </td>';
+            tr += '<td> '+ value.child +' </td>';
+            tr += '<td> '+ value.infant +' </td>';
+            tr += '<td> '+ value.prediction +' </td>';
+            tr += '</tr>';
+            number ++;
+        });
+        
+        $('#tbody_ajax').append(tr);
+      },
+    });
+  }
+
+</script>
 @endsection 

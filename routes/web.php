@@ -26,6 +26,7 @@ Route::get('/prediction', 'HomeController@prediction')->name('prediction');
 Route::post('/update', 'HomeController@update')->name('update');
 Route::post('/create', 'HomeController@create')->name('create');
 Route::post('/detail', 'HomeController@detail')->name('detail');
+Route::post('/ajax', 'HomeController@ajax')->name('ajax');
 
 Auth::routes();
 

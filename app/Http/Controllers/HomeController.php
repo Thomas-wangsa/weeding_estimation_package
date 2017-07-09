@@ -351,6 +351,7 @@ class HomeController extends Controller
                 case 2 : $is_come = "Low";break;
                 default: $is_come = "Undefined";break;  
             endswitch;
+            $data['is_come'][$n]['n'] = $i;
             $data['is_come'][$n]['is_come'] = $is_come;
             $data['is_come'][$n]['quest'] = Quest::where('is_come',$i)->count();
             $data['is_come'][$n]['adult'] = Quest::where('quest.is_come',$i)
@@ -368,5 +369,27 @@ class HomeController extends Controller
 
         //dd($data);
         return view('prediction',compact('data'));
+    }
+
+
+    protected function ajax(Request $request) {
+        $is_come = $request->id;
+        $quest = Quest::where('is_come',$is_come)
+                ->where('quest.status',1)
+                ->join('quest_detail','quest_detail.quest_id','=','quest.quest_id')
+                ->join('quest_estimation','quest_estimation.quest_id','=','quest.quest_id')
+                ->join('source','source.source_id','=','quest.source_id')
+                ->join('relation','relation.relation_id','=','quest.relation_id')
+                ->select('quest_name','invitation','source_name','relation_name','adult','child','infant','prediction')
+                ->orderBy('quest_name')
+                ->get();
+        $response = array(
+            'quest_total'   => Quest::where('is_come',$is_come)
+                                ->where('quest.status',1)->count(),
+            'quest'        => $quest
+            );
+
+        return $response;
+
     }
 }
